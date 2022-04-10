@@ -4,10 +4,11 @@ import {
   useColorScheme,
   StatusBar,
 } from "react-native";
-import 'react-native-gesture-handler';
+import "react-native-gesture-handler";
 import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
 import { NavigationContainer } from "@react-navigation/native";
 import Stacks from "./navigation/Stacks";
+import { RootSiblingParent } from "react-native-root-siblings";
 
 export default function App() {
   const isDarkMode = useColorScheme();
@@ -23,12 +24,14 @@ export default function App() {
     },
   };
   return (
-    <NavigationContainer>
-      <PaperProvider theme={theme}>
-        <StatusBar barStyle={"dark-content"} />
-        <Stacks />
-      </PaperProvider>
-    </NavigationContainer>
+    <RootSiblingParent>
+      <NavigationContainer>
+        <PaperProvider theme={theme}>
+          <StatusBar barStyle={"dark-content"} />
+          <Stacks />
+        </PaperProvider>
+      </NavigationContainer>
+    </RootSiblingParent>
   );
 }
 

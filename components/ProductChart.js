@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React, { Component } from "react";
-import { StyleSheet, SafeAreaView } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { ECharts } from "react-native-echarts-wrapper";
 
 export default class ProductChart extends Component {
@@ -68,7 +68,7 @@ export default class ProductChart extends Component {
 
   render() {
     return (
-      <SafeAreaView style={styles.chartContainer}>
+      <View style={styles.chartContainer}>
         <ECharts
           ref={this.onRef}
           option={this.option}
@@ -76,7 +76,7 @@ export default class ProductChart extends Component {
             this.chart.setBackgroundColor("#fff");
           }}
         />
-      </SafeAreaView>
+      </View>
     );
   }
 }
@@ -84,7 +84,7 @@ export default class ProductChart extends Component {
 const styles = StyleSheet.create({
   chartContainer: {
     width: "100%",
-    backgroundColor: "#F5FCFF",
+    backgroundColor: "#fff",
     height: 200,
   },
 });

@@ -1,11 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   SafeAreaView,
   ScrollView,
   StyleSheet,
   FlatList,
-  TouchableOpacity,
 } from "react-native";
 import {
   Avatar,
@@ -15,76 +14,100 @@ import {
   Paragraph,
   IconButton,
   Divider,
+  ActivityIndicator,
+  Colors,
 } from "react-native-paper";
+import Toast from "react-native-root-toast";
 import { useNavigation } from "@react-navigation/native";
 import ProductDetail from "../components/ProductDetail";
 import Products from "../components/Products";
+import { DeleteFromStore, GetFromStore } from "../components/SecureStore";
+import { stockAPI } from "../api";
 
 const Home = () => {
   const navigation = useNavigation();
   const [isShow, setIsShow] = useState(true);
-  const data = [
-    {
-      id: 0,
-      title: "title1",
-      date: new Date(),
-      content: "content1",
-    },
-    {
-      id: 1,
-      title: "title2",
-      date: new Date(),
-      content: "content1",
-    },
-    {
-      id: 2,
-      title: "title3",
-      date: new Date(),
-      content: "content3",
-    },
-    {
-      id: 3,
-      title: "title4",
-      date: new Date(),
-      content: "content4",
-    },
-    {
-      id: 4,
-      title: "title5",
-      date: new Date(),
-      content: "content5",
-    },
-  ];
+  const [productList, setProductList] = useState([]);
+  const [start, setStart] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [userInfo, setUserInfo] = useState("");
+  const [choosedItem, setChoosedItem] = useState({});
+  useEffect(() => {
+    getUserInfo();
+    getProductList();
+  }, []);
+
+  const getUserInfo = async () => {
+    GetFromStore("userInfo").then((userInfo) => {
+      console.log(userInfo);
+      setUserInfo(JSON.parse(userInfo));
+    });
+  };
+  const getProductList = async () => {
+    if (start % 5 !== 0) return;
+    setLoading(true);
+    await fetch(stockAPI + `page=${start}&pageSize=5`,{
+      headers: {'Content-Type': 'application/json;charset=UTF-8'}
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((json) => {
+        console.log(json.msg);
+        if (json?.code == 200 && json?.msg.length > 0) {
+          setProductList((prev) => prev.concat(json.msg));
+          setStart(json.msg.length + start);
+          setChoosedItem(productList[0]);
+        } else {
+          Toast.show("暂无数据.", {
+            duration: Toast.durations.SHORT,
+          });
+        }
+      })
+      .catch((err) => {
+        consol.log(err);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
   const logOut = () => {
+    DeleteFromStore("userInfo");
     navigation.navigate("auth");
   };
-  const handleExtraContent = () => {
-    console.log("q");
-  };
+
   const renderExtraContent = () => {
     return (
-      <TouchableOpacity
+      <View
         style={{
-          width: 100,
+          width: loading ? 100 : 0,
           flex: 1,
           alignItems: "center",
           justifyContent: "center",
           backgroundColor: "white",
         }}
-        onPress={() => handleExtraContent()}
       >
-        <Button icon={"arrow-right-bold"}>More</Button>
-      </TouchableOpacity>
+        <ActivityIndicator animating={loading} color={Colors.red800} />
+      </View>
     );
   };
-  const renderItem = ({ item }) => <Products data={item} />;
+
+  const renderItem = ({ item, index }) => (
+    <Products productChoosed={handleProductChoosed} data={item} index={index} />
+  );
+
+  const handleProductChoosed = (index) => {
+    console.log("INDEX:", index);
+    setChoosedItem(productList[index]);
+  };
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scroll}>
         <Card>
           <Card.Title
-            title="Nickname"
-            subtitle="Subtitle"
+            title={userInfo.userName}
+            subtitle={userInfo.userPhone}
             left={(props) => <Avatar.Icon {...props} icon="folder" />}
             right={(props) => (
               <IconButton {...props} icon="logout" onPress={() => logOut()} />
@@ -113,12 +136,13 @@ const Home = () => {
         </View>
         <FlatList
           horizontal={true}
-          data={data}
-          renderItem={renderItem}
+          data={productList}
           ListFooterComponent={renderExtraContent}
-          keyExtractor={(item) => item.id}
+          renderItem={renderItem}
+          onEndReached={() => getProductList()}
+          keyExtractor={(item) => item.productId}
         />
-        <ProductDetail />
+        <ProductDetail userId={userInfo.userId} data={choosedItem} />
       </ScrollView>
     </SafeAreaView>
   );

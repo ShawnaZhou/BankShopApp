@@ -3,11 +3,9 @@ import { View, TouchableOpacity } from "react-native";
 import { Subheading, Caption, Paragraph } from "react-native-paper";
 
 const Products = (props) => {
-  console.log(props.data);
-  const data = props.data;
-  console.log(data);
+  const { productChoosed, index } = props;
   const handleProductDetailShow = () => {
-    console.log("nothing");
+    productChoosed(index);
   };
   return (
     <TouchableOpacity
@@ -24,9 +22,9 @@ const Products = (props) => {
       }}
       onPress={() => handleProductDetailShow()}
     >
-      <Subheading>{props.data?.title}</Subheading>
-      <Caption>{props.data?.date.toString()}</Caption>
-      <Paragraph>{props?.data?.content} </Paragraph>
+      <Subheading>{props.data?.productName}</Subheading>
+      <Caption>{props.data?.productStartProfitDate}</Caption>
+      <Paragraph>{props.data?.productEndProfitMethod} </Paragraph>
     </TouchableOpacity>
   );
 };

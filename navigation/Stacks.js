@@ -2,6 +2,7 @@ import React from "react";
 import { Auth, Login, Register } from "../screens/index";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Tabs from "./Tabs";
+import ProductList from "../components/ProductList";
 import MyDrawer from "./Drawer";
 
 const Stack = createNativeStackNavigator();
@@ -29,6 +30,11 @@ const Stacks = () => {
         options={{ headerShown: false }}
         name="drawer"
         component={MyDrawer}
+      />
+      <Stack.Screen
+        options={{ title: "注册" }}
+        name="productlist"
+        component={ProductList}
       />
     </Stack.Navigator>
   );

@@ -1,15 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { View, StyleSheet, ImageBackground, StatusBar } from "react-native";
 import { Button, Text, Caption } from "react-native-paper";
-import {
-  GetFromStore,
-  SaveToStore,
-  CheckStoreValid,
-} from "../components/SecureStore";
+import { GetFromStore, CheckStoreValid } from "../components/SecureStore";
 import AuthBack from "../assets/authback.jpg";
 
 const Auth = ({ navigation }) => {
-  const [isAuth, setIsAuth] = useState(false);
   useEffect(() => {
     let storeValid = CheckStoreValid();
     console.log("storeValid", storeValid);
@@ -17,18 +12,11 @@ const Auth = ({ navigation }) => {
   }, []);
 
   const checkAuth = () => {
-    let result = GetFromStore("account");
-    if (result) {
-      setIsAuth(true);
-    }
-  };
-
-  const handleRegister = () => {
-    navigation.navigate("register");
-  };
-
-  const handleLogin = () => {
-    navigation.navigate("login");
+    GetFromStore("userInfo").then((userInfo) => {
+      if (userInfo) {
+        navigation.navigate("drawer");
+      }
+    });
   };
 
   return (
@@ -56,9 +44,15 @@ const Auth = ({ navigation }) => {
           </View>
           <Button
             icon="feather"
-            color={"#fff"}
+            mode="contained"
+            color={"#000"}
             style={styles.buttons}
-            labelStyle={{ fontSize: 16, fontWeight: "bold", letterSpacing: 6 }}
+            labelStyle={{
+              fontSize: 16,
+              fontWeight: "bold",
+              letterSpacing: 6,
+              color: "white",
+            }}
             onPress={() => navigation.navigate("login")}
           >
             登陆
@@ -66,9 +60,13 @@ const Auth = ({ navigation }) => {
           <Button
             color={"#fff"}
             style={{
-              width: "40%",
+              width: "80%",
+              height: 40,
               marginTop: "8%",
+              borderRadius: 25,
+              justifyContent: "center",
             }}
+            mode="contained"
             labelStyle={{
               fontSize: 16,
               fontWeight: "bold",
@@ -108,7 +106,10 @@ const styles = StyleSheet.create({
   },
   buttons: {
     marginVertical: "5%",
-    width: "40%",
+    width: "80%",
+    borderRadius: 25,
+    height: 45,
+    justifyContent: "center",
   },
 });
 

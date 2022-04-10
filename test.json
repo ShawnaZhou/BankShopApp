@@ -1,0 +1,41 @@
+{
+  "type": "default",
+  "status": 200,
+  "ok": true,
+  "statusText": "",
+  "headers": {
+    "map": {
+      "access-control-allow-credentials": "true",
+      "content-type": "application/json;charset=UTF-8",
+      "access-control-allow-headers": "Content-Type,X-CAF-Authorization-Token,sessionToken,X-TOKEN",
+      "access-control-allow-methods": "GET, POST, DELETE, PUT",
+      "access-control-allow-origin": "*",
+      "date": "Fri, 08 Apr 2022 16:15:44 GMT",
+      "content-length": "274",
+      "keep-alive": "timeout=60",
+      "connection": "keep-alive"
+    }
+  },
+  "url": "http://192.168.43.105:6667/login",
+  "bodyUsed": false,
+  "_bodyInit": {
+    "_data": {
+      "size": 274,
+      "offset": 0,
+      "blobId": "E1C1A2A9-473D-4686-AA47-3E23698CF893",
+      "type": "application/json",
+      "name": "login",
+      "__collector": {}
+    }
+  },
+  "_bodyBlob": {
+    "_data": {
+      "size": 274,
+      "offset": 0,
+      "blobId": "E1C1A2A9-473D-4686-AA47-3E23698CF893",
+      "type": "application/json",
+      "name": "login",
+      "__collector": {}
+    }
+  }
+}

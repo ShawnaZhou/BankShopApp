@@ -1,14 +1,13 @@
 import React from "react";
 import { Home, Profile } from "../screens/index";
-import { Button } from "react-native-paper";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 const Drawer = createDrawerNavigator();
 
 const MyDrawer = () => {
   return (
-    <Drawer.Navigator>
+    <Drawer.Navigator initialRouteName="Home">
       <Drawer.Screen name="Home" component={Home} />
-      <Drawer.Screen name="Profile" component={Profile} />
+      <Drawer.Screen name="Order" component={Profile} />
     </Drawer.Navigator>
   );
 };

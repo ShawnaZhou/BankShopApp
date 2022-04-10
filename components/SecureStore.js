@@ -6,7 +6,9 @@ import * as SecureStore from "expo-secure-store";
  * @param {*} value ：保存信息的value值 *
  */
 export async function SaveToStore(key, value) {
-  await SecureStore.setItemAsync(key, value);
+  await SecureStore.setItemAsync(key, value).then(() => {
+    console.log("Saved to store: ", key);
+  });
 }
 
 /**
@@ -33,14 +35,17 @@ export async function GetFromStore(key, option) {
  * void
  */
 export async function DeleteFromStore(key) {
-  await SecureStore.deleteItemAsync(key);
+  await SecureStore.deleteItemAsync(key).then(() => {
+    console.log("Delete success: ", key);
+  });
 }
 
 /**
- * 
+ *
  * @returns 返回是否开启SecureStore
  */
 export async function CheckStoreValid() {
   let result = await SecureStore.isAvailableAsync();
   return result;
 }
+

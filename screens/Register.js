@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { SafeAreaView, StyleSheet, Text, View, TextInput } from "react-native";
 import { Button, Caption } from "react-native-paper";
+import { SaveToStore } from "../components/SecureStore";
+import { registerAPI } from "../api";
 
 const Register = ({ navigation }) => {
   const [name, setName] = useState("");
@@ -19,14 +21,14 @@ const Register = ({ navigation }) => {
     if (loading) return;
     try {
       let data = {
-        name: name,
+        username: name,
         password: password,
         cardId: cardId,
         phone: phone,
       };
       setLoading(true);
       console.log(data);
-      await fetch("***", {
+      await fetch(registerAPI, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -36,6 +38,10 @@ const Register = ({ navigation }) => {
         .then((res) => res.json())
         .then((res) => {
           console.log("result", res);
+          SaveToStore("userInfo", JSON.stringify(res.msg));
+        })
+        .catch((error) => {
+          console.log("error", error);
         })
         .finally((e) => {
           setLoading(false);
@@ -43,6 +49,7 @@ const Register = ({ navigation }) => {
         });
     } catch (err) {}
   };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>

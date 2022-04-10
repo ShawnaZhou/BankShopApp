@@ -1,16 +1,54 @@
 import React, { useState, useEffect } from "react";
 import { SafeAreaView, StyleSheet, Text } from "react-native";
 import { Button, TextInput } from "react-native-paper";
+import { SaveToStore } from "../components/SecureStore";
+import Toast from "react-native-root-toast";
+import { loginAPI } from "../api";
 
 const Login = ({ navigation }) => {
-  const [text, setText] = useState("");
+  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [passwordValid, setPasswordValid] = useState(true);
-
-  const handleLogin = () => {
-    navigation.navigate("drawer");
+  const [loading, setLoading] = useState(false);
+  const handleLogin = async () => {
+    try {
+      let data = {
+        phone: phone,
+        password: password,
+      };
+      setLoading(true);
+      await fetch(loginAPI, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          if (res.code == 200) {
+            SaveToStore("userInfo", JSON.stringify(res.msg));
+            Toast.show("登录成功.", {
+              duration: Toast.durations.SHORT,
+            });
+            navigation.navigate("drawer");
+          } else {
+            Toast.show(
+              "Request failed to verify. Maybe your phone or password typed wrong",
+              {
+                duration: Toast.durations.LONG,
+              }
+            );
+          }
+        })
+        .finally((e) => {
+          setLoading(false);
+        });
+    } catch (err) {
+      console.log("error", err);
+    }
   };
-  
+
   return (
     <SafeAreaView style={styles.container}>
       <Text style={{ fontSize: 40, fontWeight: "bold", marginBottom: "15%" }}>
@@ -18,8 +56,9 @@ const Login = ({ navigation }) => {
       </Text>
       <TextInput
         label="手机号"
-        onChangeText={setText}
-        value={text}
+        onChangeText={setPhone}
+        value={phone}
+        type="phone"
         placeholder="输入手机号"
         style={{ width: "90%", marginTop: "5%" }}
         right={<TextInput.Affix text="/11" />}
@@ -30,7 +69,6 @@ const Login = ({ navigation }) => {
         value={password}
         onChangeText={setPassword}
         type="password"
-        onChange={(e) => setText(e.target.value)}
         placeholder="输入密码"
         style={{ width: "90%", marginTop: "5%" }}
         right={
@@ -45,6 +83,7 @@ const Login = ({ navigation }) => {
         color="#fff"
         icon="account-multiple-check"
         dark={true}
+        loading={loading}
         style={{
           marginTop: "15%",
           width: "50%",
